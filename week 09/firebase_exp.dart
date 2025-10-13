@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// ✅ Paste your Firebase web config values here (Dart syntax, not JS)
+// Firebase config
 const firebaseConfig = FirebaseOptions(
   apiKey: "AIzaSyBeeXKCVek25Mbjo0BNlFlTJpLVILK7Lpw",
   authDomain: "my-flutter-app-aed79.firebaseapp.com",
@@ -25,72 +25,132 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Zapp.run Firebase Demo',
-      home: const HomePage(),
+      title: 'Firebase Data Form',
+      home: const DataFormPage(),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class DataFormPage extends StatefulWidget {
+  const DataFormPage({super.key});
+
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<DataFormPage> createState() => _DataFormPageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  final TextEditingController _controller = TextEditingController();
-  final users = FirebaseFirestore.instance.collection('users');
+class _DataFormPageState extends State<DataFormPage> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _ageController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _commentController = TextEditingController();
 
-  Future<void> _addUser(String name) async {
-    if (name.isEmpty) return;
-    await users.add({'name': name, 'timestamp': FieldValue.serverTimestamp()});
-    _controller.clear();
+  final CollectionReference dataCollection =
+      FirebaseFirestore.instance.collection('formData');
+
+  Future<void> _submitData() async {
+    if (_formKey.currentState!.validate()) {
+      await dataCollection.add({
+        'name': _nameController.text,
+        'age': int.tryParse(_ageController.text) ?? 0,
+        'email': _emailController.text,
+        'comment': _commentController.text,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      // Clear fields after submission
+      _nameController.clear();
+      _ageController.clear();
+      _emailController.clear();
+      _commentController.clear();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Data submitted successfully!')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Firebase Users')),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration:
-                        const InputDecoration(labelText: 'Enter user name'),
+      appBar: AppBar(title: const Text('Data Storing Form')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(labelText: 'Name'),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Please enter a name' : null,
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: () => _addUser(_controller.text),
-                ),
-              ],
+                  TextFormField(
+                    controller: _ageController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(labelText: 'Age'),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Please enter age' : null,
+                  ),
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: const InputDecoration(labelText: 'Email'),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Please enter email' : null,
+                  ),
+                  TextFormField(
+                    controller: _commentController,
+                    decoration: const InputDecoration(labelText: 'Comment'),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Please enter a comment' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _submitData,
+                    child: const Text('Submit'),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: users.orderBy('timestamp', descending: true).snapshots(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                final docs = snapshot.data!.docs;
-                return ListView(
-                  children: docs.map((doc) {
-                    return ListTile(
-                      leading: const Icon(Icons.person),
-                      title: Text(doc['name']),
-                    );
-                  }).toList(),
-                );
-              },
+            const SizedBox(height: 20),
+            const Text('Submitted Data:', style: TextStyle(fontSize: 18)),
+            const SizedBox(height: 10),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: dataCollection
+                    .orderBy('timestamp', descending: true)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  final docs = snapshot.data!.docs;
+                  return ListView(
+                    children: docs.map((doc) {
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        child: ListTile(
+                          title: Text(doc['name']),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Age: ${doc['age']}'),
+                              Text('Email: ${doc['email']}'),
+                              Text('Comment: ${doc['comment']}'),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
