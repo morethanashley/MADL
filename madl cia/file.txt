@@ -1,0 +1,113 @@
+Task 1: Create a Simple User Profile UI 
+ Objective: Demonstrate the use of basic layout widgets. 
+Steps: 
+1. Use a Column as the main body. 
+2. Add a CircleAvatar widget with a placeholder image for the profile picture. 
+3. Below the avatar, add a Text widget for the user's name (e.g., "John Doe"). 
+4. Add another Text widget for the user's email, using a smaller font size and a different color. 
+Task 2: Build a Simple Login Form 
+ Objective: Implement a Form with input fields and a button. 
+Steps: 
+1. Use a Form widget as the body. 
+2. Inside the form, add two TextFormField widgets: one for "Email" and one for "Password". Set 
+the obscureText property of the password field to true. 
+3. Add an ElevatedButton at the bottom. 
+4. When the button is pressed, use a print() statement to output "Login Button Pressed". 
+Task 3: Implement a Row of Action Buttons 
+ Objective: Use the Row widget for horizontal layout. 
+Steps: 
+1. Place a Row widget in the center of the screen. 
+2. Inside the Row, add three IconButton widgets (e.g., for Call, Message, Email). 
+3. Use the mainAxisAlignment property to space the buttons evenly. 
+Task 4: Create a Page with Navigation 
+ Objective: Implement basic navigation between two screens. 
+Steps: 
+1. Create two separate Dart files for two screens (e.g., home_screen.dart and profile_screen.dart). 
+2. On the home screen, add an ElevatedButton. 
+3. Use Navigator.push() inside the button's onPressed callback to navigate to the profile screen. 
+4. On the profile screen, add an AppBar with a back button (automatically provided by Scaffold). 
+Task 5: Add a Simple Fade-In Animation 
+ Objective: Implement a basic implicit animation. 
+Steps: 
+1. Create a boolean variable _visible initialized to false. 
+2. In the initState() method, use Future.delayed to set _visible to true after 1 second. 
+3. In the build method, use an AnimatedOpacity widget. 
+4. Set its opacity to _visible ? 1.0 : 0.0 and its duration to 1 second. 
+5. The child of AnimatedOpacity can be any widget (e.g., a "Welcome" text). 
+Task 6: Display a List of Items 
+ Objective: Use a ListView to display scrollable content. 
+Steps: 
+1. Use a ListView.builder as the body. 
+2. Define an itemCount (e.g., 10). 
+3. In the itemBuilder, return a ListTile widget for each item. 
+4. Set the title of the ListTile to "Item ${index + 1}". 
+Task 7: Read and Display Data from a Local JSON String 
+ Objective: Demonstrate basic JSON handling. 
+Steps: 
+1. Define a String variable containing a simple JSON array (e.g., '[{"name":"Apple"}, 
+{"name":"Banana"}]'). 
+2. Use json.decode() to parse the string into a list. 
+3. Use a ListView.builder to display the list of fruits, displaying each name in a Text widget. 
+Task 8: Implement a Bottom Navigation Bar 
+ Objective: Create a multi-page app structure. 
+Steps: 
+1. Create a StatefulWidget. 
+2. Define an int _currentIndex variable. 
+3. In the Scaffold, add a BottomNavigationBar. 
+4. Set the currentIndex property to _currentIndex. 
+5. In the onTap callback, use setState() to update _currentIndex. 
+6. Use a conditional statement in the body to display different containers/text based 
+on _currentIndex. 
+Task 9: Simple Widget Test for a Text Widget 
+ Objective: Write a basic unit test for a widget. 
+Steps: 
+1. In the test folder, create a file widget_test.dart. 
+2. Use the testWidgets function. 
+3. Use pumpWidget() to build a MaterialApp containing a Text('Hello') widget. 
+4. Use expect(find.text('Hello'), findsOneWidget) to verify the text is found on the screen. 
+Task 10: Implement a Draggable Widget 
+ Objective: Demonstrate understanding of the Draggable and DragTarget widgets. 
+Steps: 
+1. Create a Draggable widget (e.g., a colored Container with a "Drag me" text) as the child of 
+a Center widget. 
+2. Set the feedback of the Draggable to a slightly transparent version of the same container. 
+3. Place a DragTarget widget elsewhere on the screen (e.g., in a Row or Column). 
+4. In the DragTarget's onAccept callback, use setState() to change its color or child text to show 
+the item was dropped. 
+Task 11: Create an Image Gallery with GestureDetector 
+ Objective: Use GestureDetector for a tap interaction on images. 
+Steps: 
+1. Use a Row or GridView to display 3 Image.network widgets (using free online placeholder 
+image URLs). 
+2. Wrap each Image widget in a GestureDetector. 
+3. In the onTap callback of the GestureDetector, use a print() statement or a SnackBar to show a 
+message like "Image 1 tapped". 
+Task 12: Build a Simple Color Toggler 
+ Objective: Manage a widget's state locally to change its appearance. 
+ Short Steps: 
+1. In a StatefulWidget, create a Color _backgroundColor = Colors.white; variable. 
+2. In the Scaffold, set the backgroundColor to _backgroundColor. 
+3. Add a FloatingActionButton to the screen. 
+4. In 
+the 
+button's onPressed callback, 
+use setState() to 
+toggle _backgroundColor between Colors.white and Colors.blue. 
+Task 13: Create an Animated Container 
+ Objective: Implement an implicit animation that responds to user input. 
+Steps: 
+1. In a StatefulWidget, create a double _width = 100; and double _height = 100; variable. 
+2. In the body, use an AnimatedContainer widget. Set its width, height, duration (e.g., 1 second), 
+and color. 
+3. Add a FloatingActionButton. 
+4. In the button's onPressed, use setState() to change _width and _height to a new random or 
+fixed size (e.g., 200). The container will animate to the new size. 
+Task 14: Simple TabBar Layout 
+ Objective: Implement navigation using a TabBar and TabBarView. 
+ Short Steps: 
+1. Create a DefaultTabController widget as the root of your app. 
+2. Set the length property to 2. 
+3. In the Scaffold, add an AppBar with a bottom property that is a TabBar with two tabs (e.g., 
+"Chats", "Status"). 
+4. Set the body of the Scaffold to a TabBarView with two children (e.g., a Center(child: 
+Text("Chats Screen")) and Center(child: Text("Status Screen"))).
